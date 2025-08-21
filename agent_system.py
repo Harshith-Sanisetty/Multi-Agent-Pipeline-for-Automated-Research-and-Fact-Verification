@@ -27,10 +27,10 @@ class ResearchAgent:
                 )
                 
                 test_response = self.llm.invoke("Hello")
-                print(f"✅ Successfully initialized with model: {model}")
+                print(f" Successfully initialized with model: {model}")
                 break
             except Exception as e:
-                print(f"❌ Failed to initialize model {model}: {str(e)}")
+                print(f" Failed to initialize model {model}: {str(e)}")
                 continue
         
         if not self.llm:
@@ -39,9 +39,9 @@ class ResearchAgent:
        
         try:
             self.tools = self._convert_tools(get_tools(agent_type))
-            print(f"✅ Initialized {len(self.tools)} tools for {agent_type}")
+            print(f" Initialized {len(self.tools)} tools for {agent_type}")
         except Exception as e:
-            print(f"⚠️ Warning: Tool initialization failed: {e}")
+            print(f" Warning: Tool initialization failed: {e}")
             self.tools = []  
         self.claim_tracker = ClaimTracker()
         
@@ -93,7 +93,7 @@ class ResearchAgent:
                 max_execution_time=120  
             )
         except Exception as e:
-            print(f"❌ Failed to create agent: {e}")
+            print(f" Failed to create agent: {e}")
            
             self.agent = None
             self.executor = None
@@ -122,7 +122,7 @@ class ResearchAgent:
         return converted_tools
     
     def run(self, input_data, max_retries=3):
-        """Run the agent with retry logic and better error handling"""
+        
         
        
         if isinstance(input_data, str):
@@ -137,7 +137,7 @@ class ResearchAgent:
         last_error = None
         for attempt in range(max_retries):
             try:
-                print(f"🔄 Attempt {attempt + 1} for {self.agent_type} agent")
+                print(f"Attempt {attempt + 1} for {self.agent_type} agent")
                 
                
                 if attempt > 0:
@@ -151,7 +151,7 @@ class ResearchAgent:
                         claims = self.claim_tracker.extract_claims(result["output"])
                         self.claim_tracker.add_claims(claims, "Researcher Agent")
                     except Exception as e:
-                        print(f"⚠️ Warning: Claim tracking failed: {e}")
+                        print(f"Warning: Claim tracking failed: {e}")
                 
                 return result.get("output", "No output generated")
                 
@@ -164,7 +164,7 @@ class ResearchAgent:
                 
                 if any(keyword in error_msg for keyword in ["connection", "timeout", "network"]):
                     if attempt < max_retries - 1:
-                        print(f"🔄 Connection issue detected. Retrying in {2 ** attempt} seconds...")
+                        print(f" Connection issue detected. Retrying in {2 ** attempt} seconds...")
                         continue
                     else:
                         return self._fallback_run(input_data["input"])
